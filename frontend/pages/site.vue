@@ -32,11 +32,33 @@
       height="calc(100vh - 240px)"
     >
       <el-table-column label="#" type="index" :index="tableData.from"></el-table-column>
-      <el-table-column label="Perusahaan" prop="perusahaan"></el-table-column>
+      <el-table-column
+        label="Perusahaan"
+        prop="perusahaan"
+        :filters="filterPerusahaan"
+        column-key="perusahaan_id"
+      ></el-table-column>
       <el-table-column label="Kode" prop="kode"></el-table-column>
       <el-table-column label="Nama" prop="nama"></el-table-column>
       <el-table-column label="Keterangan" prop="keterangan"></el-table-column>
-      <el-table-column label="Status" prop="status"></el-table-column>
+      <el-table-column
+        label="Status"
+        prop="status"
+        :filters="statusFilter"
+        :filter-multiple="false"
+        column-key="status"
+        width="100"
+        align="center"
+        header-align="center"
+      >
+        <template slot-scope="scope">
+          <el-tag
+            effect="dark"
+            :type="scope.row.status ? 'success' : 'danger'"
+            size="small"
+          >{{scope.row.status ? 'Aktif' : 'Non-Aktif'}}</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column fixed="right" width="40px" align="center" header-align="center">
         <template slot="header">
           <el-button
@@ -91,12 +113,14 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   data() {
     return {
       tableData: {},
       filters: {},
-      sort: 'name',
+      sort: 'nama',
       order: 'ascending',
       page: 1,
       pageSize: 10,
@@ -104,6 +128,9 @@ export default {
       selectedData: {},
       showForm: false
     }
+  },
+  computed: {
+    ...mapState(['statusFilter', 'filterPerusahaan'])
   },
   methods: {
     requestData() {
@@ -115,7 +142,7 @@ export default {
         order: this.order
       };
 
-      this.$axios.get('/api/site').then(r => {
+      this.$axios.get('/api/site', { params: Object.assign(params, this.filters) }).then(r => {
         this.tableData = r.data
       })
     },

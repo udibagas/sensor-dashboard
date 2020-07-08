@@ -15,7 +15,28 @@ class PerusahaanController extends Controller
      */
     public function index(Request $request)
     {
-        return Perusahaan::paginate($request->pageSize);
+        $data = Perusahaan::when($request->keyword, function ($q) use ($request) {
+            return $q->where(function ($x) use ($request) {
+                $x->where('kode', 'LIKE', "%{$request->keyword}%")
+                    ->orWhere('nama', 'LIKE', "%{$request->keyword}%")
+                    ->orWhere('alamat', 'LIKE', "%{$request->keyword}%")
+                    ->orWhere('fax', 'LIKE', "%{$request->keyword}%")
+                    ->orWhere('email', 'LIKE', "%{$request->keyword}%")
+                    ->orWhere('website', 'LIKE', "%{$request->keyword}%");
+            });
+        })->when($request->status, function ($q) use ($request) {
+            $status = is_array($request->status) ? (int) $request->status[0] : (int) $request->status;
+            return $q->where('status', (int) $status);
+        })
+            ->orderBy($request->sort ?: 'nama', $request->order == 'ascending' ? 'asc' : 'desc')
+            ->paginate($request->pageSize);
+
+        return [
+            'total' => $data->total(),
+            'from' => $data->firstItem(),
+            'to' => $data->lastItem(),
+            'data' => $data->items()
+        ];
     }
 
     /**

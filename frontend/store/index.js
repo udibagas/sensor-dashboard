@@ -8,8 +8,8 @@ export const state = () => ({
   listUser: [],
   filterUser: [],
   statusFilter: [
-    { value: '0', text: 'Aktif' },
-    { value: '1', text: 'Non-Aktif' },
+    { value: '0', text: 'Non-Aktif' },
+    { value: '1', text: 'Aktif' },
   ]
 })
 

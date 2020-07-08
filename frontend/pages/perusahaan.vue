@@ -39,7 +39,24 @@
       <el-table-column label="Fax" prop="fax"></el-table-column>
       <el-table-column label="Email" prop="email"></el-table-column>
       <el-table-column label="Website" prop="website"></el-table-column>
-      <el-table-column label="Status" prop="status"></el-table-column>
+      <el-table-column
+        label="Status"
+        prop="status"
+        :filters="statusFilter"
+        :filter-multiple="false"
+        column-key="status"
+        width="100"
+        align="center"
+        header-align="center"
+      >
+        <template slot-scope="scope">
+          <el-tag
+            effect="dark"
+            :type="scope.row.status ? 'success' : 'danger'"
+            size="small"
+          >{{scope.row.status ? 'Aktif' : 'Non-Aktif'}}</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column fixed="right" width="40px" align="center" header-align="center">
         <template slot="header">
           <el-button
@@ -94,12 +111,14 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   data() {
     return {
       tableData: {},
       filters: {},
-      sort: 'name',
+      sort: 'nama',
       order: 'ascending',
       page: 1,
       pageSize: 10,
@@ -107,6 +126,9 @@ export default {
       selectedData: {},
       showForm: false
     }
+  },
+  computed: {
+    ...mapState(['statusFilter'])
   },
   methods: {
     requestData() {
@@ -118,7 +140,7 @@ export default {
         order: this.order
       };
 
-      this.$axios.get('/api/perusahaan').then(r => {
+      this.$axios.get('/api/perusahaan', { params: Object.assign(params, this.filters) }).then(r => {
         this.tableData = r.data
       })
     },

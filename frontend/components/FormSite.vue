@@ -7,7 +7,7 @@
   >
     <el-form label-position="left" label-width="150px">
       <el-form-item label="Perusahaan" :class="formError.perusahaan_id ? 'is-error' : ''">
-        <el-select v-model="formModel.perusahaan_id" placeholder="Perusahaan">
+        <el-select v-model="formModel.perusahaan_id" placeholder="Perusahaan" style="width:100%">
           <el-option v-for="p in listPerusahaan" :key="p.id" :value="p.id" :label="p.nama"></el-option>
         </el-select>
         <div
