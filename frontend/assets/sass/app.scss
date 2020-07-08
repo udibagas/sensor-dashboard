@@ -1,1 +1,13 @@
 @import '~bootstrap/scss/bootstrap';
+
+.el-table {
+  border-top: 2px solid #ddd;
+}
+
+.rotate-90  {
+  transform: rotate(90deg);
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+}

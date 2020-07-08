@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SiteRequest;
 use App\Site;
 use Illuminate\Http\Request;
 
@@ -12,19 +13,9 @@ class SiteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return Site::paginate($request->pageSize);
     }
 
     /**
@@ -33,9 +24,14 @@ class SiteController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(SiteRequest $request)
     {
-        //
+        $site = Site::create($request->all());
+
+        return [
+            'message' => 'Data telah disimpan',
+            'data' => $site
+        ];
     }
 
     /**
@@ -46,18 +42,7 @@ class SiteController extends Controller
      */
     public function show(Site $site)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Site  $site
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Site $site)
-    {
-        //
+        return $site;
     }
 
     /**
@@ -67,9 +52,14 @@ class SiteController extends Controller
      * @param  \App\Site  $site
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Site $site)
+    public function update(SiteRequest $request, Site $site)
     {
-        //
+        $site->update($request->all());
+
+        return [
+            'message' => 'Data telah disimpan',
+            'data' => $site
+        ];
     }
 
     /**
@@ -80,6 +70,16 @@ class SiteController extends Controller
      */
     public function destroy(Site $site)
     {
-        //
+        $site->delete();
+
+        return ['message' => 'Data telah dihapus'];
+    }
+
+    public function getList(Request $request)
+    {
+        return Site::select('id', 'nama')
+            ->orderBy('nama', 'asc')
+            ->get()
+            ->toArray();
     }
 }

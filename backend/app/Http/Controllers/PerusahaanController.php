@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PerusahaanRequest;
 use App\Perusahaan;
 use Illuminate\Http\Request;
 
@@ -12,19 +13,9 @@ class PerusahaanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return Perusahaan::paginate($request->pageSize);
     }
 
     /**
@@ -33,9 +24,14 @@ class PerusahaanController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PerusahaanRequest $request)
     {
-        //
+        $perusahaan = Perusahaan::create($request->all());
+
+        return [
+            'message' => 'Data telah disimpan',
+            'data' => $perusahaan
+        ];
     }
 
     /**
@@ -46,18 +42,7 @@ class PerusahaanController extends Controller
      */
     public function show(Perusahaan $perusahaan)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Perusahaan  $perusahaan
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Perusahaan $perusahaan)
-    {
-        //
+        return $perusahaan;
     }
 
     /**
@@ -67,9 +52,14 @@ class PerusahaanController extends Controller
      * @param  \App\Perusahaan  $perusahaan
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Perusahaan $perusahaan)
+    public function update(PerusahaanRequest $request, Perusahaan $perusahaan)
     {
-        //
+        $perusahaan->update($request->all());
+
+        return [
+            'message' => 'Data telah disimpan',
+            'data' => $perusahaan
+        ];
     }
 
     /**
@@ -80,6 +70,16 @@ class PerusahaanController extends Controller
      */
     public function destroy(Perusahaan $perusahaan)
     {
-        //
+        $perusahaan->delete();
+
+        return ['message' => 'Data telah dihapus'];
+    }
+
+    public function getList(Request $request)
+    {
+        return Perusahaan::select('id', 'nama')
+            ->orderBy('nama', 'asc')
+            ->get()
+            ->toArray();
     }
 }

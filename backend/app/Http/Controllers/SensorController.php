@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SensorRequest;
 use App\Sensor;
 use Illuminate\Http\Request;
 
@@ -12,19 +13,9 @@ class SensorController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return Sensor::paginate($request->pageSize);
     }
 
     /**
@@ -33,9 +24,14 @@ class SensorController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(SensorRequest $request)
     {
-        //
+        $sensor = Sensor::create($request->all());
+
+        return [
+            'message' => 'Data telah disimpan',
+            'data' => $sensor
+        ];
     }
 
     /**
@@ -46,18 +42,7 @@ class SensorController extends Controller
      */
     public function show(Sensor $sensor)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Sensor  $sensor
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Sensor $sensor)
-    {
-        //
+        return $sensor;
     }
 
     /**
@@ -67,9 +52,14 @@ class SensorController extends Controller
      * @param  \App\Sensor  $sensor
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Sensor $sensor)
+    public function update(SensorRequest $request, Sensor $sensor)
     {
-        //
+        $sensor->update($request->all());
+
+        return [
+            'message' => 'Data telah disimpan',
+            'data' => $sensor
+        ];
     }
 
     /**
@@ -80,6 +70,16 @@ class SensorController extends Controller
      */
     public function destroy(Sensor $sensor)
     {
-        //
+        $sensor->delete();
+
+        return ['message' => 'Data telah dihapus'];
+    }
+
+    public function getList(Request $request)
+    {
+        return Sensor::select('id', 'nama')
+            ->orderBy('nama', 'asc')
+            ->get()
+            ->toArray();
     }
 }

@@ -1,37 +1,16 @@
 <template>
   <el-container style="height:calc(100vh)">
-    <el-aside :width="collapse ? 'auto' : '250px'" style="background-color:#193495;color:#fff;">
+    <el-aside :width="collapse ? 'auto' : '200px'" style="background-color:#193495;color:#fff;">
       <el-menu
-        default-active="2"
+        router
         :collapse="collapse"
         background-color="#193495"
         text-color="#ccc"
         active-text-color="#fff"
       >
-        <el-submenu index="1">
-          <template slot="title">
-            <i class="el-icon-location"></i>
-            <span>Navigator One</span>
-          </template>
-          <el-menu-item-group title="Group One">
-            <el-menu-item index="1-1">item one</el-menu-item>
-            <el-menu-item index="1-2">item one</el-menu-item>
-          </el-menu-item-group>
-          <el-menu-item-group title="Group Two">
-            <el-menu-item index="1-3">item three</el-menu-item>
-          </el-menu-item-group>
-          <el-submenu index="1-4">
-            <template slot="title">item four</template>
-            <el-menu-item index="1-4-1">item one</el-menu-item>
-          </el-submenu>
-        </el-submenu>
-        <el-menu-item index="2">
-          <i class="el-icon-menu"></i>
-          <span>Navigator Two</span>
-        </el-menu-item>
-        <el-menu-item index="4">
-          <i class="el-icon-setting"></i>
-          <span>Navigator Four</span>
+        <el-menu-item v-for="(m, i) in menus" :index="m.path" :key="i">
+          <i :class="m.icon"></i>
+          <span slot="title">{{m.label}}</span>
         </el-menu-item>
       </el-menu>
     </el-aside>
@@ -74,8 +53,20 @@ export default {
   middleware: 'auth',
   data() {
     return {
-      collapse: false
+      collapse: false,
+      menus: [],
     }
+  },
+  methods: {
+    getNavigation() {
+      this.$axios.get('/api/navigation').then(r => {
+        this.menus = r.data
+      })
+    }
+  },
+  mounted() {
+    this.getNavigation()
+    this.$store.dispatch('getListPerusahaan');
   }
 }
 </script>
