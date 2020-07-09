@@ -26,6 +26,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('site/getList', 'SiteController@getList');
     Route::get('sensor/getList', 'SensorController@getList');
     Route::get('user/getList', 'UserController@getList');
+    Route::get('user/getRoleList', 'UserController@getRoleList');
 
     Route::resource('perusahaan', 'PerusahaanController')->only(['index', 'store', 'show', 'update', 'destroy']);
     Route::resource('site', 'SiteController')->only(['index', 'store', 'show', 'update', 'destroy']);

@@ -15,7 +15,32 @@ class SensorController extends Controller
      */
     public function index(Request $request)
     {
-        return Sensor::paginate($request->pageSize);
+        $data = Sensor::when($request->keyword, function ($q) use ($request) {
+            return $q->where(function ($x) use ($request) {
+                $x->where('kode', 'LIKE', "%{$request->keyword}%")
+                    ->orWhere('nama', 'LIKE', "%{$request->keyword}%")
+                    ->orWhere('keterangan', 'LIKE', "%{$request->keyword}%");
+            });
+        })->when($request->site_id, function ($q) use ($request) {
+            $site = is_array($request->site_id) ? $request->site_id : [$request->site_id];
+            return $q->whereIn('site_id', $site);
+        })->when($request->status, function ($q) use ($request) {
+            $status = is_array($request->status) ? (int) $request->status[0] : (int) $request->status;
+            return $q->where('status', (int) $status);
+        })
+            ->orderBy($request->sort ?: 'nama', $request->order == 'ascending' ? 'asc' : 'desc')
+            ->paginate($request->pageSize);
+
+        return [
+            'total' => $data->total(),
+            'from' => $data->firstItem(),
+            'to' => $data->lastItem(),
+            'data' => $data->map(function ($d) {
+                return array_merge($d->toArray(), [
+                    'site' => $d->site->nama,
+                ]);
+            })
+        ];
     }
 
     /**

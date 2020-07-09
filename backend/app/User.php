@@ -50,4 +50,16 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public static function roleList()
+    {
+        return [
+            self::ROLE_USER => 'USER',
+            self::ROLE_OPERATOR_SITE => 'OPERATOR SITE',
+            self::ROLE_OPERATOR_HO => 'OPERATOR HO',
+            self::ROLE_ADMIN_SITE => 'ADMIN SITE',
+            self::ROLE_ADMIN_HO => 'ADMIN HO',
+            self::ROLE_SUPER_ADMIN => 'SUPER ADMIN',
+        ];
+    }
 }

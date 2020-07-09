@@ -90,4 +90,9 @@ class UserController extends Controller
             ->get()
             ->toArray();
     }
+
+    public function getRoleList()
+    {
+        return User::roleList();
+    }
 }

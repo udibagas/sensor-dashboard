@@ -67,6 +67,9 @@ export default {
   mounted() {
     this.getNavigation()
     this.$store.dispatch('getListPerusahaan');
+    this.$store.dispatch('getListSite');
+    this.$store.dispatch('getListSensor');
+    this.$store.dispatch('getListUser');
   }
 }
 </script>
