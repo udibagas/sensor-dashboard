@@ -7,6 +7,8 @@ export const state = () => ({
   filterSensor: [],
   listUser: [],
   filterUser: [],
+  listRole: [],
+  filterRole: [],
   statusFilter: [
     { value: '0', text: 'Non-Aktif' },
     { value: '1', text: 'Aktif' },
@@ -29,6 +31,10 @@ export const mutations = {
   setListUser(state, data) {
     state.listUser = data
     state.filterUser = data.map(l => { return { value: l.id, text: l.name } })
+  },
+  setListRole(state, data) {
+    state.listRole = Object.keys(data).map(i => { return { id: parseInt(i), name: data[i] } })
+    state.filterRole = state.listRole.map(l => { return { value: l.id, text: l.name } })
   }
 }
 
@@ -48,5 +54,9 @@ export const actions = {
   async getListUser({ commit }) {
     let { data } = await this.$axios.get('/api/user/getList')
     commit('setListUser', data)
+  },
+  async getListRole({ commit }) {
+    let { data } = await this.$axios.get('/api/user/getRoleList')
+    commit('setListRole', data)
   },
 }
