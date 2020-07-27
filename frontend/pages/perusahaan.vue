@@ -1,27 +1,28 @@
 <template>
   <div>
-    <h6 class="text-muted">KELOLA PERUSAHAAN</h6>
-
-    <el-form inline class="text-right" @submit.native.prevent="() => { return }">
-      <el-form-item>
-        <el-button
-          icon="el-icon-plus"
-          type="primary"
-          size="small"
-          @click="() => { showForm = true; selectedData = {}; }"
-        >TAMBAH PERUSAHAAN</el-button>
-      </el-form-item>
-      <el-form-item>
-        <el-input
-          prefix-icon="el-icon-search"
-          clearable
-          size="small"
-          placeholder="Cari"
-          v-model="keyword"
-          @change="(v) => { keyword = v; requestData(); }"
-        ></el-input>
-      </el-form-item>
-    </el-form>
+    <div class="d-flex">
+      <h6 class="text-muted flex-grow-1">KELOLA PERUSAHAAN</h6>
+      <el-form inline class="text-right" @submit.native.prevent="() => { return }">
+        <el-form-item>
+          <el-button
+            icon="el-icon-plus"
+            type="primary"
+            size="small"
+            @click="() => { showForm = true; selectedData = {}; }"
+          >TAMBAH PERUSAHAAN</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-input
+            prefix-icon="el-icon-search"
+            clearable
+            size="small"
+            placeholder="Cari"
+            v-model="keyword"
+            @change="(v) => { keyword = v; requestData(); }"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+    </div>
 
     <el-table
       @sort-change="sortChange"
@@ -29,7 +30,7 @@
       :default-sort="{prop: sort, order: order}"
       :data="tableData.data"
       stripe
-      height="calc(100vh - 240px)"
+      height="calc(100vh - 215px)"
     >
       <el-table-column label="#" type="index" :index="tableData.from"></el-table-column>
       <el-table-column label="Kode" prop="kode"></el-table-column>
