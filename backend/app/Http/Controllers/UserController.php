@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserRequest;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -12,19 +13,28 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
+        $data = User::orderBy($request->order ?: 'name', $request->sort == 'ascending' ? 'asc' : 'desc')
+            ->when($request->keyword, function ($q) use ($request) {
+                return $q->where('name', 'LIKE', $request->keyword);
+            })->when($request->perusahaan_id, function ($q) use ($request) {
+                return $q->whereIn('perusahaan_id', $request->perusahaan_id);
+            })->when($request->site_id, function ($q) use ($request) {
+                return $q->whereIn('site_id', $request->site_id);
+            })->paginate($request->pageSize);
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return [
+            'total' => $data->total(),
+            'from' => $data->firstItem(),
+            'to' => $data->lastItem(),
+            'data' => $data->map(function ($d) {
+                return array_merge($d->toArray(), [
+                    'perusahaan' => $d->perusahaan ? $d->perusahaan->nama : '',
+                    'site' => $d->site ? $d->site->nama : '',
+                ]);
+            })
+        ];
     }
 
     /**
@@ -33,31 +43,20 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
-        //
-    }
+        $input = $request->all();
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
+        if ($request->password) {
+            $input['password'] = bcrypt($request->password);
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        $user = User::create($input);
+
+        return [
+            'message' => 'Data telah disimpan',
+            'data' => $user
+        ];
     }
 
     /**
@@ -67,9 +66,20 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UserRequest $request, User $user)
     {
-        //
+        $input = $request->all();
+
+        if ($request->password) {
+            $input['password'] = bcrypt($request->password);
+        }
+
+        $user->update($input);
+
+        return [
+            'message' => 'Data telah disimpan',
+            'data' => $user
+        ];
     }
 
     /**
@@ -78,9 +88,11 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        //
+        $user->delete();
+
+        return ['message' => 'Data telah dihapus'];
     }
 
     public function getList(Request $request)

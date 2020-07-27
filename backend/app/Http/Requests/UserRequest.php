@@ -26,7 +26,8 @@ class UserRequest extends FormRequest
         return [
             'name' => 'required',
             'email' => 'required',
-            'role' => 'required'
+            'role' => 'required',
+            'password' => 'sometimes|alpha_num|min:8|confirmed'
         ];
     }
 
@@ -35,7 +36,8 @@ class UserRequest extends FormRequest
         return [
             'name' => 'Nama',
             'email' => 'Email',
-            'role' => 'Role'
+            'role' => 'Role',
+            'Password' => 'Password'
         ];
     }
 }

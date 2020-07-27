@@ -30,8 +30,11 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'role', 'status',
+        'perusahaan_id', 'site_id'
     ];
+
+    protected $appends = ['role_name'];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -49,6 +52,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'status' => 'boolean'
     ];
 
     public static function roleList()
@@ -61,5 +65,20 @@ class User extends Authenticatable
             self::ROLE_ADMIN_HO => 'ADMIN HO',
             self::ROLE_SUPER_ADMIN => 'SUPER ADMIN',
         ];
+    }
+
+    public function perusahaan()
+    {
+        return $this->belongsTo(Perusahaan::class);
+    }
+
+    public function site()
+    {
+        return $this->belongsTo(Site::class);
+    }
+
+    public function getRoleNameAttribute()
+    {
+        return self::roleList()[$this->role];
     }
 }
