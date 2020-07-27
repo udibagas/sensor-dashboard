@@ -19,4 +19,11 @@ class AuthController extends Controller
             'error' => 'invalid_credentials'
         ], 403);
     }
+
+    public function logout()
+    {
+        auth()->logout();
+
+        return ['message' => 'Logout successfully'];
+    }
 }

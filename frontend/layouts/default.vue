@@ -25,7 +25,7 @@
           <span class="brand">DASHBOARD SENSOR</span>
         </div>
         <div>
-          <el-dropdown trigger="click">
+          <el-dropdown trigger="click" @command="handleCommand">
             <el-avatar :size="35" style="vertical-align:middle;margin:0px 10px 0 20px"></el-avatar>
 
             <el-dropdown-menu slot="dropdown">
@@ -62,6 +62,13 @@ export default {
       this.$axios.get('/api/navigation').then(r => {
         this.menus = r.data
       })
+    },
+    handleCommand(command) {
+      if (command == 'logout') {
+        this.$axios.post('/logout').then(r => {
+          this.$router.push('/login');
+        })
+      }
     }
   },
   mounted() {
@@ -69,7 +76,8 @@ export default {
     this.$store.dispatch('getListPerusahaan');
     this.$store.dispatch('getListSite');
     this.$store.dispatch('getListSensor');
-    this.$store.dispatch('getListUser');
+    // this.$store.dispatch('getListUser');
+    this.$store.dispatch('getListRole');
   }
 }
 </script>
