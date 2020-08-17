@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SensorRequest;
+use App\Http\Resources\SensorCollection;
 use App\Sensor;
 use Illuminate\Http\Request;
 
@@ -31,16 +32,7 @@ class SensorController extends Controller
             ->orderBy($request->sort ?: 'nama', $request->order == 'ascending' ? 'asc' : 'desc')
             ->paginate($request->pageSize);
 
-        return [
-            'total' => $data->total(),
-            'from' => $data->firstItem(),
-            'to' => $data->lastItem(),
-            'data' => $data->map(function ($d) {
-                return array_merge($d->toArray(), [
-                    'site' => $d->site->nama,
-                ]);
-            })
-        ];
+        return new SensorCollection($data);
     }
 
     /**
