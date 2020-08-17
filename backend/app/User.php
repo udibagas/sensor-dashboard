@@ -81,4 +81,9 @@ class User extends Authenticatable
     {
         return self::roleList()[$this->role];
     }
+
+    public function setPasswordAttribute($value)
+    {
+        return $this->attributes['password'] = bcrypt($value);
+    }
 }

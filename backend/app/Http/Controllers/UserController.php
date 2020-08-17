@@ -45,13 +45,7 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-        $input = $request->all();
-
-        if ($request->password) {
-            $input['password'] = bcrypt($request->password);
-        }
-
-        $user = User::create($input);
+        $user = User::create($request->all());
 
         return [
             'message' => 'Data telah disimpan',
@@ -68,13 +62,7 @@ class UserController extends Controller
      */
     public function update(UserRequest $request, User $user)
     {
-        $input = $request->all();
-
-        if ($request->password) {
-            $input['password'] = bcrypt($request->password);
-        }
-
-        $user->update($input);
+        $user->update($request->all());
 
         return [
             'message' => 'Data telah disimpan',
